@@ -49,8 +49,8 @@ public class CustomWeatherWidget {
         /*
          * Wind speed and humidity
          */
-        result.put("wind", Integer.toString((int)reader.getJSONObject("wind").getDouble("speed")));
-        result.put("humidity", reader.getJSONObject("main").getString("humidity"));
+        result.put("wind", Integer.toString((int)(reader.getJSONObject("wind").getDouble("speed")*1.609F))+"kmph");
+        result.put("humidity", reader.getJSONObject("main").getString("humidity")+"%");
 
         /*
          * Temperature and Feels Like
