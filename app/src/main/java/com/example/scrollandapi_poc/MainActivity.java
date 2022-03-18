@@ -3,13 +3,21 @@ package com.example.scrollandapi_poc;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Constraints;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -54,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView  test;
 
+    LinearLayout mainLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        test = findViewById(R.id.newsHeader);
+
+        mainLayout = findViewById(R.id.mainLinearLayout);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,9 +181,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    RecyclerView recyclerView;
+    CustomAdaptor adaptor;
+//    ProgressDialog dialog;
 
     private void processNewsRequestRetrofit(String url, String city, String APIKey) {
         String urlReq = url+city+"&apiKey="+APIKey;
+//        dialog.setTitle("Fetching news for "+city+"...");
+//        dialog.show();
         NewsRequestManager manager = new NewsRequestManager(this);
         manager.getNewsHeadlines(listener, city, APIKey);
     }
@@ -181,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFetchData(List<NewsHeadline> list, String message) {
             showNews(list);
+//            dialog.dismiss();
         }
 
         @Override
@@ -189,21 +206,21 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void showNews(List<NewsHeadline> list) {
-        test.setText(list.get(0).getAuthor());
+    private void showNews(List<NewsHeadline> newsList) {
+        recyclerView = findViewById(R.id.recycler_main);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        adaptor = new CustomAdaptor(this, newsList);
+        recyclerView.setAdapter(adaptor);
+
+
+
     }
 
 
 
 
-    private void generateCardContent(){
 
-
-    }
-
-    private void displayCardOnScreen(){
-
-    }
 
 
 
