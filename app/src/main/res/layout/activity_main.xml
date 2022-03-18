@@ -52,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                app:cardElevation="8dp"
                 app:cardBackgroundColor="@color/grey_700"
                 app:layout_constraintTop_toBottomOf="@+id/cityNameInput"
                 >
@@ -82,6 +83,8 @@
                         android:text="@string/cityName"
                         android:textColor="@color/white"
                         android:textSize="42sp"
+                        android:autoSizeMinTextSize="10dp"
+                        android:maxLines="1"
                         app:layout_constraintStart_toStartOf="@+id/mainCardLayout"
                         app:layout_constraintTop_toTopOf="@+id/mainCardLayout" />
 
@@ -245,8 +248,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="16dp">
+                android:layout_height="1000dp"
+                android:layout_margin="0dp">
 
 
             </androidx.recyclerview.widget.RecyclerView>

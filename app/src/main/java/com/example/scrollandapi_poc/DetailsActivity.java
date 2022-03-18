@@ -32,10 +32,10 @@ public class DetailsActivity extends AppCompatActivity {
         headlines = (NewsHeadline) getIntent().getSerializableExtra("data");
 
         txt_title.setText(headlines.getTitle());
-        txt_author.setText(headlines.getAuthor());
+        txt_author.setText(headlines.getAuthor()==null?"Anonymous":headlines.getAuthor());
         txt_time.setText(headlines.getPublishedAt());
         txt_detail.setText(headlines.getDescription());
-        txt_content.setText(headlines.getContent());
+        txt_content.setText(headlines.getContent().replaceAll("\\r\\n", ""));
 
         Picasso.get().load(headlines.getUrlToImage()).into(img_news);
 

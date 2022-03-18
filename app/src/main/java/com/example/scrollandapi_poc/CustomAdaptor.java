@@ -1,5 +1,6 @@
 package com.example.scrollandapi_poc;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,9 +33,10 @@ public class CustomAdaptor extends RecyclerView.Adapter<CustomViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.textTitle.setText(headlines.get(position).getTitle());
         holder.textSource.setText(headlines.get(position).getSource().getName());
+        holder.textAuthor.setText(headlines.get(position).getAuthor());
         if(headlines.get(position).getUrlToImage()!=null){
             Picasso.get().load(headlines.get(position).getUrlToImage()).into(holder.imgHeadline);
         }
