@@ -1,8 +1,9 @@
 package com.example.scrollandapi_poc.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class NewsApiResponse {
+public class NewsApiResponse implements Serializable {
     String status = "";
     Integer totalResults = 0;
     List<NewsHeadline> articles;

@@ -1,6 +1,8 @@
 package com.example.scrollandapi_poc.model;
 
-public class NewsHeadline {
+import java.io.Serializable;
+
+public class NewsHeadline implements Serializable {
     Source source = null;
 
     String author = "";

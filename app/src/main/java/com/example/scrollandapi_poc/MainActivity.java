@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -37,7 +39,7 @@ import java.util.Map;
 
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SelectListener{
 
 
     TextView tvCityName;
@@ -210,18 +212,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_main);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
-        adaptor = new CustomAdaptor(this, newsList);
+        adaptor = new CustomAdaptor(this, newsList, this);
         recyclerView.setAdapter(adaptor);
 
 
 
     }
 
-
-
-
-
-
+    @Override
+    public void onNewsClicked(NewsHeadline headlines) {
+        startActivity(new Intent(MainActivity.this, DetailsActivity.class)
+        .putExtra("data", headlines));
+    }
 
 
     //https://api.openweathermap.org/data/2.5/weather?q=toronto&appid=a6144f2599dd8e4b5f8f4711edde917f

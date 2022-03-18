@@ -2,6 +2,7 @@ package com.example.scrollandapi_poc;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,10 +17,12 @@ public class CustomAdaptor extends RecyclerView.Adapter<CustomViewHolder> {
 
     private Context context;
     private List<NewsHeadline> headlines;
+    private SelectListener listener;
 
-    public CustomAdaptor(Context context, List<NewsHeadline> headlines) {
+    public CustomAdaptor(Context context, List<NewsHeadline> headlines, SelectListener listener) {
         this.context = context;
         this.headlines = headlines;
+        this.listener = listener;
     }
 
     @NonNull
@@ -35,6 +38,13 @@ public class CustomAdaptor extends RecyclerView.Adapter<CustomViewHolder> {
         if(headlines.get(position).getUrlToImage()!=null){
             Picasso.get().load(headlines.get(position).getUrlToImage()).into(holder.imgHeadline);
         }
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onNewsClicked(headlines.get(position));
+            }
+        });
     }
 
     @Override
