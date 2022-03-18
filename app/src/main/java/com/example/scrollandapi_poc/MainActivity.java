@@ -4,17 +4,13 @@ package com.example.scrollandapi_poc;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,16 +24,9 @@ import com.example.scrollandapi_poc.model.NewsHeadline;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -101,28 +90,17 @@ public class MainActivity extends AppCompatActivity {
                 if(etCityNameInput.getText().length()!=0){
                     String city = etCityNameInput.getText().toString();
 
-                    /*
-                    Handling weather widget card
-                     */
                     String WeatherUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
                     String APIKey = "a6144f2599dd8e4b5f8f4711edde917f";
                     processWeatherRequest(WeatherUrl, city, APIKey);
 
-//                    https://newsapi.org/v2/everything?q=vapi&apiKey=9700591ad5d844b7af3f04baa1e58c69
-
-                    /*
-                    Handling news widget card
-                     */
                     String NewsUrl = "https://newsapi.org/v2/everything?q=";
                     String NewsAPIKey = "9700591ad5d844b7af3f04baa1e58c69";
-                    processNewsRequest(NewsUrl, city, NewsAPIKey);
                     processNewsRequestRetrofit(NewsUrl, city, NewsAPIKey);
-
                 }
             }
         });
         try{
-
         }catch (Exception e){
         }
 
@@ -140,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
     private void processWeatherRequest(String url, String city, String APIKey) {
         String urlReq = url+city+"&appid="+APIKey;
         StringRequest request = new StringRequest(Request.Method.GET, urlReq, new Response.Listener<String>() {
-
             @Override
             public void onResponse(String response) {
                 try {
@@ -149,30 +126,16 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error){
             }
-        }){
-//            @Nullable
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> mp = new HashMap<String, String>();
-//                mp.put("q","toronto");
-//                mp.put("appid","a6144f2599dd8e4b5f8f4711edde917f");
-//                return mp;
-//            }
-
-        };
-//        Toast.makeText(this, urlReq, Toast.LENGTH_LONG).show();
+        });
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         queue.add(request);
     }
 
-    @SuppressWarnings({})
-//    @RequiresApi(api = Build.VERSION_CODES.O)
     private void displayWeatherOnScreen(JSONObject reader) throws JSONException {
         mainCard.setVisibility(View.GONE);
         mainCard.setAlpha(0f);
@@ -206,61 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void processNewsRequest(String url, String city, String APIKey) {
-
-        String urlReq = url+city+"&apiKey="+APIKey;
-//        etCityNameInput.setText(urlReq);
-        StringRequest request = new StringRequest(Request.Method.GET, urlReq, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                test.setText("onResponse");
-                try {
-                    JSONObject reader = new JSONObject(response);
-                    displayNewsOnScreen(reader);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error){
-//                test.setText("Error");
-            }
-        }){
-//            @Nullable
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> mp = new HashMap<String, String>();
-//                mp.put("q","toronto");
-//                mp.put("appid","a6144f2599dd8e4b5f8f4711edde917f");
-//                return mp;
-//            }
-
-        };
-//        Toast.makeText(this, urlReq, Toast.LENGTH_LONG).show();
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        queue.add(request);
-    }
 
 
     private void processNewsRequestRetrofit(String url, String city, String APIKey) {
         String urlReq = url+city+"&apiKey="+APIKey;
-
-
         NewsRequestManager manager = new NewsRequestManager(this);
         manager.getNewsHeadlines(listener, city, APIKey);
-
-
-
-
     }
 
     private final OnFetchDataListener<NewsApiResponse> listener = new OnFetchDataListener<NewsApiResponse>() {
         @Override
         public void onFetchData(List<NewsHeadline> list, String message) {
-
             showNews(list);
         }
 
@@ -275,22 +194,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void displayNewsOnScreen(JSONObject reader) throws JSONException {
-//        CustomNewsWidget customNewsWidget = CustomNewsWidget.getInstance();
-//        List<Map<String, String>> data = customNewsWidget.getNewsWidgetElements(reader);
 
-
-//
-//        Map<String, String> news = new HashMap<String, String>();
-//        String publisher = reader.getJSONArray("articles").getJSONObject(0).getJSONObject("source").getString("name");
-//        news.put("publisher", publisher);
-
-
-//        test.setText(data.get(0).get("publisher"));
-
-    }
 
     private void generateCardContent(){
+
 
     }
 
