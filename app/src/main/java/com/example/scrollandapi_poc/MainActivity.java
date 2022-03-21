@@ -12,12 +12,14 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,9 +36,10 @@ import com.example.scrollandapi_poc.model.NewsHeadline;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements SelectListener{
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
     CardView mainCard;
 
 
+    ImageButton imgBtnSave;
 
     TextView  test;
 
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
 
 
 
+        imgBtnSave = findViewById(R.id.img_btn_save);
 
         mainLayout = findViewById(R.id.mainLinearLayout);
 
@@ -113,9 +118,27 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
                 }
             }
         });
-        try{
-        }catch (Exception e){
-        }
+        imgBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(etCityNameInput.getText().length()!=0) {
+                    String city = etCityNameInput.getText().toString();
+                    SharedPreferences sharedPreferences = getSharedPreferences("CityHistoryPreference", MODE_PRIVATE);
+                    if(sharedPreferences.contains("history")){
+                        Set<String> historySet = new HashSet<String>
+                                (sharedPreferences.getStringSet("history", new HashSet<String>()));
+                        historySet.add(city.toLowerCase());
+                        sharedPreferences.edit().putStringSet("history", historySet).apply();
+
+                    }else{
+                        Set<String> historySet = new HashSet<String>();
+                        historySet.add(city.toLowerCase());
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putStringSet("history", historySet).apply();
+                    }
+                }
+            }
+        });
 
 
 
@@ -123,9 +146,9 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
 
     //button listener
     public void toSavedCities(View view) {
-//        Intent intent = new Intent(this, MainWeatherActivity.class);
-//        intent.putExtra("city", e.getText().toString());
-//        startActivity(intent);
+        Intent intent = new Intent(this, FavoriteCitiesActivity.class);
+        intent.putExtra("city", etCityNameInput.getText().toString());
+        startActivity(intent);
     }
 
     private void processWeatherRequest(String url, String city, String APIKey) {

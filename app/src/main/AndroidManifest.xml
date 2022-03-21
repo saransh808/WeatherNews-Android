@@ -15,6 +15,9 @@
             android:name=".DetailsActivity"
             android:exported="false" />
         <activity
+            android:name=".FavoriteCitiesActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
