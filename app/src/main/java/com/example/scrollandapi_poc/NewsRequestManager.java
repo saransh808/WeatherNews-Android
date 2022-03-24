@@ -26,7 +26,6 @@ public class NewsRequestManager {
     public void getNewsHeadlines(OnFetchDataListener listener, String query, String apiKey){
         CallNewsApi callNewsApi = retrofit.create(CallNewsApi.class);
         Call<NewsApiResponse> call = callNewsApi.callHeadlines(query,apiKey);
-
         try{
             call.enqueue(new Callback<NewsApiResponse>() {
                 @Override
@@ -35,7 +34,6 @@ public class NewsRequestManager {
                         Toast.makeText(context, "error", Toast.LENGTH_LONG).show();
                     listener.onFetchData(response.body().getArticles(), response.message());
                 }
-
                 @Override
                 public void onFailure(Call<NewsApiResponse> call, Throwable t) {
                     listener.onError("Request Failed");
@@ -45,7 +43,6 @@ public class NewsRequestManager {
             e.printStackTrace();
         }
     }
-
 
     public NewsRequestManager(Context context){
         this.context = context;
