@@ -32,10 +32,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.scrollandapi_poc.model.NewsApiResponse;
 import com.example.scrollandapi_poc.model.NewsHeadline;
+import com.example.scrollandapi_poc.model.WeatherHistory;
+import com.example.scrollandapi_poc.model.WeatherHistoryList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,9 @@ import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements SelectListener{
+
+    String WeatherUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+    String APIKey = "a6144f2599dd8e4b5f8f4711edde917f";
 
 
     TextView tvCityName;
@@ -74,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        generateLatestWeatherHistoryCard();
 
 
         etCityNameInput = findViewById(R.id.cityNameInput);
@@ -110,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
 
                     String WeatherUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
                     String APIKey = "a6144f2599dd8e4b5f8f4711edde917f";
-                    processWeatherRequest(WeatherUrl, city, APIKey);
+                    processWeatherRequest(WeatherUrl, city, APIKey, false);
 
                     String NewsUrl = "https://newsapi.org/v2/everything?q=";
                     String NewsAPIKey = "9700591ad5d844b7af3f04baa1e58c69";
@@ -136,11 +145,52 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putStringSet("history", historySet).apply();
                     }
+                    processWeatherRequest(WeatherUrl, city, APIKey, true);
                 }
             }
         });
 
 
+
+    }
+
+    private void generateLatestWeatherHistoryCard() {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("CityHistoryPreference", MODE_PRIVATE);
+        Set<String> historySet = new HashSet<String>();
+        historySet = sharedPreferences.getStringSet("history",historySet);
+
+
+
+        if(!historySet.isEmpty()){
+            for(String city : historySet){
+                buildWeatherHistoryObject(city);// String city
+
+
+            }
+        }else{
+
+        }
+
+
+        //generate weatherHistoryList with API call
+        //TODO
+
+
+        //
+//        ArrayList<WeatherHistory> weatherHistoryList = WeatherHistoryList.getWeatherList();
+//        if(weatherHistoryList!=null && !weatherHistoryList.isEmpty()){
+//
+//        }
+    }
+
+    private WeatherHistory buildWeatherHistoryObject(String city) {
+        String WeatherUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        String APIKey = "a6144f2599dd8e4b5f8f4711edde917f";
+        WeatherHistory weatherHistory = new WeatherHistory("Toronto","7",null);
+        processWeatherRequest(WeatherUrl, city, APIKey, true);
+
+        return weatherHistory;
 
     }
 
@@ -151,14 +201,18 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
         startActivity(intent);
     }
 
-    private void processWeatherRequest(String url, String city, String APIKey) {
+    private void processWeatherRequest(String url, String city, String APIKey, Boolean forHistory) {
         String urlReq = url+city+"&appid="+APIKey;
         StringRequest request = new StringRequest(Request.Method.GET, urlReq, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject reader = new JSONObject(response);
-                    displayWeatherOnScreen(reader);
+                    if(!forHistory) {
+                        displayWeatherOnScreen(reader);
+                    }else{
+                        generateWeatherForHistory(reader);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -185,6 +239,9 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
         CustomWeatherWidget customWeatherWidget = CustomWeatherWidget.getInstance();
         Map<String, String> data = customWeatherWidget.getWeatherWidgetElements(reader);
 
+
+
+
         this.setTitle("Weather | " + data.get("title"));
 
 
@@ -202,6 +259,22 @@ public class MainActivity extends AppCompatActivity implements SelectListener{
         tvSunsetTime.setText(data.get("sunset"));
     }
 
+
+    private void generateWeatherForHistory(JSONObject reader) throws JSONException {
+
+
+        CustomWeatherWidget customWeatherWidget = CustomWeatherWidget.getInstance();
+        Map<String, String> data = customWeatherWidget.getWeatherWidgetElements(reader);
+
+        this.setTitle("Weather | " + data.get("title"));
+
+        WeatherHistory weatherHistory = new WeatherHistory();
+        weatherHistory.setCityName(data.get("title"));
+        weatherHistory.setCityTemperature(data.get("temp"));
+
+        ArrayList<WeatherHistory> weatherHistoryList = WeatherHistoryList.getWeatherList();
+        weatherHistoryList.add(weatherHistory);
+    }
 
 
 

@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scrollandapi_poc.model.CityWeather;
+import com.example.scrollandapi_poc.model.WeatherHistory;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,7 +21,9 @@ import java.util.List;
 public class CustomAdaptorFavCity  extends RecyclerView.Adapter<CustomAdaptorFavCity.CustomViewHolderFavCity> {
 
     private Context context;
-    private ArrayList<CityWeather> cityWeather;
+//    private ArrayList<CityWeather> cityWeather;
+
+    private ArrayList<WeatherHistory> cityWeather;
     private SelectListener listener;
 
 
@@ -36,11 +39,11 @@ public class CustomAdaptorFavCity  extends RecyclerView.Adapter<CustomAdaptorFav
             favCityCardCityName = itemView.findViewById(R.id.fav_city_card_city_name);
             favCityCardTemp = itemView.findViewById(R.id.fav_city_card_temp);
             favCityCardImg = itemView.findViewById(R.id.fav_city_card_img);
-            favCityCardMain = itemView.findViewById(R.id.fav_city_card_main);;
+            favCityCardMain = itemView.findViewById(R.id.fav_city_card_main);
         }
     }
 
-    public CustomAdaptorFavCity(Context context, ArrayList<CityWeather> cityWeather, SelectListener listener){
+    public CustomAdaptorFavCity(Context context, ArrayList<WeatherHistory> cityWeather, SelectListener listener){
         this.context = context;
         this.cityWeather = cityWeather;
         this.listener = listener;
@@ -60,7 +63,7 @@ public class CustomAdaptorFavCity  extends RecyclerView.Adapter<CustomAdaptorFav
     public void onBindViewHolder(@NonNull CustomViewHolderFavCity holder, int position) {
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\ngenerating holder");
         holder.favCityCardCityName.setText(cityWeather.get(position).getCityName());
-        holder.favCityCardTemp.setText(cityWeather.get(position).getCityTemp());
+        holder.favCityCardTemp.setText(cityWeather.get(position).getCityTemperature());
 //        if(cityWeather.get(position).getCityImg()!=null){
 //            Picasso.get().load(cityWeather.get(position).getCityImg()).into(holder.favCityCardImg);
 //        }

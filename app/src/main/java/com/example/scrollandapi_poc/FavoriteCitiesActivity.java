@@ -21,6 +21,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.scrollandapi_poc.model.CityWeather;
 import com.example.scrollandapi_poc.model.NewsHeadline;
+import com.example.scrollandapi_poc.model.WeatherHistory;
+import com.example.scrollandapi_poc.model.WeatherHistoryList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,96 +48,81 @@ public class FavoriteCitiesActivity  extends AppCompatActivity {
         test.setText("");
 
 
+        ArrayList<WeatherHistory> weatherHistoryList = WeatherHistoryList.getWeatherList();
+        generateCards(weatherHistoryList);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("CityHistoryPreference", MODE_PRIVATE);
-        Set<String> historySet = new HashSet<String>();
-        historySet = sharedPreferences.getStringSet("history",historySet);
 
-        ArrayList<String> cities = new ArrayList<String>();
-        if(!historySet.isEmpty()){
-            test.append("Set is not empty");
-            for(String city : historySet){
-                test.append(" "+city);
-                cities.add(city);
-            }
-        }else{
-
-        }
-
-        generateFavWeatherReportCityCards(cities);
+//        generateFavWeatherReportCityCards(cities);
 
     }
 
-    private void generateFavWeatherReportCityCards(ArrayList<String> cities) {
-
-        citiesWeather.clear();
-        String WeatherUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-        String APIKey = "a6144f2599dd8e4b5f8f4711edde917f";
-        for(String city : cities){
+//    private void generateFavWeatherReportCityCards(ArrayList<String> cities) {
+//
+//        citiesWeather.clear();
+//        String WeatherUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+//        String APIKey = "a6144f2599dd8e4b5f8f4711edde917f";
+//        for(String city : cities){
 //            processWeatherRequestSync(WeatherUrl, city, APIKey);
-            break;
+//            break;
+//        }
+//        test.append("before generateCards");
+//
+//        generateCards(citiesWeather);
+//    }
+
+
+
+    private void generateCards(ArrayList<WeatherHistory> weatherHistoryList) {
+
+//        citiesWeather.add(new CityWeather("Delhi", "23" + (char) 0x00B0 + "C", null));
+//        citiesWeather.add(new CityWeather("Toronto", "4" + (char) 0x00B0 + "C", null));
+
+        if (weatherHistoryList != null && !weatherHistoryList.isEmpty()) {
+            RecyclerView recyclerView;
+            CustomAdaptorFavCity adaptor;
+
+            recyclerView = findViewById(R.id.recycler_favorite_cities);
+            adaptor = new CustomAdaptorFavCity(this, weatherHistoryList, null);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setAdapter(adaptor);
         }
-        test.append("before generateCards");
-
-        generateCards(citiesWeather);
     }
 
-
-
-    private void generateCards(ArrayList<CityWeather> citiesWeather) {
-
-        citiesWeather.add(new CityWeather("Delhi","23"+(char)0x00B0+"C",null));
-        citiesWeather.add(new CityWeather("Toronto","4"+(char)0x00B0+"C",null));
-        if(!citiesWeather.isEmpty()) {
-            for (CityWeather city : citiesWeather)
-                test.append(city.getCityTemp());
-        }else{
-            test.append("API didn't work");
-        }
-        RecyclerView recyclerView;
-        CustomAdaptorFavCity adaptor;
-
-        recyclerView = findViewById(R.id.recycler_favorite_cities);
-        adaptor = new CustomAdaptorFavCity(this, citiesWeather, null);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(adaptor);
-    }
-
-    private void processWeatherRequest(String url, String city, String APIKey) {
-        String urlReq = url+city+"&appid="+APIKey;
-        StringRequest request = new StringRequest(Request.Method.GET, urlReq, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject reader = new JSONObject(response);
-                    displayWeatherOnScreen(reader);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error){
-            }
-        });
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        queue.add(request);
-    }
-
-    private void processWeatherRequestSync(String url, String city, String APIKey) {
-        String urlReq = url+city+"&appid="+APIKey;
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonObjectRequest request = new JsonObjectRequest(urlReq, new JSONObject(), future, future);
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        queue.add(request);
-        try{
-            JSONObject response = future.get();
-            displayWeatherOnScreen(response);
-        }catch (Exception e){
-
-        }
-
-    }
+//    private void processWeatherRequest(String url, String city, String APIKey) {
+//        String urlReq = url+city+"&appid="+APIKey;
+//        StringRequest request = new StringRequest(Request.Method.GET, urlReq, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject reader = new JSONObject(response);
+//                    displayWeatherOnScreen(reader);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener(){
+//            @Override
+//            public void onErrorResponse(VolleyError error){
+//            }
+//        });
+//        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+//        queue.add(request);
+//    }
+//
+//    private void processWeatherRequestSync(String url, String city, String APIKey) {
+//        String urlReq = url+city+"&appid="+APIKey;
+//        RequestFuture<JSONObject> future = RequestFuture.newFuture();
+//        JsonObjectRequest request = new JsonObjectRequest(urlReq, new JSONObject(), future, future);
+//        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+//        queue.add(request);
+//        try{
+//            JSONObject response = future.get();
+//            displayWeatherOnScreen(response);
+//        }catch (Exception e){
+//
+//        }
+//
+//    }
 
 
 
